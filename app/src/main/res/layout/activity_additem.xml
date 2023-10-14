@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#f0f0f0"
+    tools:context=".Additem">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add Item"
+        android:textSize="32sp"
+        android:gravity="center"
+        android:layout_marginTop="16dp"
+        android:textColor="#333333"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp"
+        android:shadowColor="#666666"
+        android:shadowDx="2"
+        android:shadowDy="2"/>
+
+    <EditText
+        android:id="@+id/ItemId"
+        android:hint="Item ID"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:layout_margin="8dp"
+        android:background="#ffffff"
+        android:textColor="#000000"
+        android:inputType="textCapWords"/>
+
+    <EditText
+        android:id="@+id/ItemName"
+        android:hint="Item Name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:layout_margin="8dp"
+        android:background="#ffffff"
+        android:textColor="#000000"
+        android:inputType="textCapWords"/>
+
+    <Spinner
+        android:id="@+id/spinnerCategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:layout_margin="8dp"
+        android:background="#ffffff"
+        android:textColor="#000000"
+        android:inputType="textCapWords"
+        android:foreground="?attr/selectableItemBackground"
+        android:spinnerMode="dropdown">
+        <!-- Populate the spinner with categories -->
+    </Spinner>
+
+    <EditText
+        android:id="@+id/editTextItemPrice"
+        android:hint="Item Price"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:layout_margin="8dp"
+        android:background="#ffffff"
+        android:textColor="#000000"
+        android:inputType="textCapWords"/>
+
+
+    <EditText
+        android:id="@+id/editTextItemQuantity"
+        android:hint="Item Quantity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:layout_margin="8dp"
+        android:background="#ffffff"
+        android:textColor="#000000"
+        android:inputType="textCapWords"/>
+
+    <EditText
+        android:id="@+id/editTextItemDescription"
+        android:hint="Item Description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:layout_margin="8dp"
+        android:background="#ffffff"
+        android:textColor="#000000"
+        android:inputType="textCapWords"/>
+
+    <!-- Placeholder for the image upload section -->
+    <Button
+        android:id="@+id/btnUploadImage"
+        android:text="@string/upload_image1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="#2196F3"
+        android:textColor="@color/white"
+        android:padding="12dp"
+        android:layout_marginTop="16dp"/>
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/profile"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:scaleType="centerCrop"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/btnCancel"
+            android:text="Cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#FF0000"
+            android:textColor="@color/white"
+            android:padding="12dp"
+            android:layout_margin="8dp"/>
+
+        <Button
+            android:id="@+id/btnAddItem"
+            android:text="Add Item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/Green"
+            android:textColor="@color/white"
+            android:padding="12dp"
+            android:layout_margin="8dp"/>
+    </LinearLayout>
+
+</LinearLayout></ScrollView>
