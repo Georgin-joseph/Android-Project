@@ -1,7 +1,7 @@
 package com.example.foodapp;
 
 public class fastDeliveryDomain {
-    String imageUrl,itemName,itemPrice,itemDescription;
+    String imageUrl,itemName,itemPrice,itemDescription,itemId;
 
     public String getImageUrl() {
         return imageUrl;
@@ -18,4 +18,8 @@ public class fastDeliveryDomain {
     public String getItemDescription() {
         return itemDescription;
     }
+    public String getItemId() {
+        return itemId;
+    }
+
 }

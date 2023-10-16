@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -41,14 +42,21 @@ public class FastDeliveryAdapter extends RecyclerView.Adapter<FastDeliveryAdapte
         holder.des.setText(fastDeliveryDomain.getItemDescription());
         holder.price.setText(fastDeliveryDomain.getItemPrice());
 
+        String documentId = fastDeliveryDomain.getItemId();
         // Set an OnClickListener for the card view
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Launch the item_details activity
+
                 Intent intent = new Intent(context, item_details.class);
+                intent.putExtra("item_id", documentId);
                 context.startActivity(intent);
+
+                Toast.makeText(context, "Item ID: " + documentId, Toast.LENGTH_SHORT).show();
+
             }
+
         });
     }
 

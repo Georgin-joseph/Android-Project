@@ -38,6 +38,7 @@
                     android:layout_marginStart="24dp"
                     android:layout_marginTop="24dp"
                     android:padding="8dp"
+                    android:onClick="back"
                     android:src="@drawable/arrow"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -67,7 +68,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="$ 112"
+                        android:text="112"
                         android:textAlignment="viewEnd"
                         android:textColor="@color/Green"
                         android:textSize="22sp"
@@ -247,6 +248,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <Button
+                    android:id="@+id/addToCartButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
