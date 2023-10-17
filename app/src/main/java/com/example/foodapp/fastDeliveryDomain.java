@@ -3,6 +3,7 @@ package com.example.foodapp;
 public class fastDeliveryDomain {
     String imageUrl,itemName,itemPrice,itemDescription,itemId;
 
+
     public String getImageUrl() {
         return imageUrl;
     }

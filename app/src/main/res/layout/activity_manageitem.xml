@@ -18,6 +18,7 @@
         android:textStyle="bold"
         android:layout_marginBottom="16dp"/>
 
+
     <TextView
         android:id="@+id/cat"
         android:layout_width="wrap_content"

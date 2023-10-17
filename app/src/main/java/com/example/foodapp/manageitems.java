@@ -4,6 +4,16 @@ public class manageitems{
 
    private String itemName,itemId,itemQuantity;
 
+    private String documentId;
+
+
+    public String getDocumentId() {
+        return documentId;
+    }
+
+    public void setDocumentId(String documentId) {
+        this.documentId = documentId;
+    }
     public String getItemName() {
         return itemName;
     }
