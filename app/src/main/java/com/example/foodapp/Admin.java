@@ -62,7 +62,7 @@ public class Admin extends AppCompatActivity {
     private void retrieveShortageItemCount() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("items")
-                .whereLessThan("itemQuantity", "10") // Adjust the value as per your definition of shortage
+                .whereLessThan("itemQuantity", "5") // Adjust the value as per your definition of shortage
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override

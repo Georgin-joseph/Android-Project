@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,6 +19,7 @@ import com.example.foodapp.Domain.CategoryDomain;
 import com.example.foodapp.MyAdapter;
 import com.example.foodapp.R;
 import com.example.foodapp.User;
+import com.example.foodapp.User_profile;
 import com.example.foodapp.fastDeliveryDomain;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -136,5 +138,10 @@ public class Admin2 extends AppCompatActivity {
                 Log.e("Firebase", "Error retrieving data from Firestore: " + e.getMessage());
             }
         });
+    }
+
+    public void userprofile(View view) {
+        Intent i = new Intent(getApplicationContext(), User_profile.class);
+        startActivity(i);
     }
 }

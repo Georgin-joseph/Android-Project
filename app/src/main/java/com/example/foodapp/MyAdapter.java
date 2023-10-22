@@ -127,50 +127,52 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
         // Show the DialogPlus dialog
         dialog.show();
-        // Inside the showEditDialog method
-// Inside the showEditDialog method
+        Button updateButton = rootView.findViewById(R.id.btnupdate);
 
+        // Inside the updateButton click listener in MyAdapter
+        // Inside the updateButton click listener in MyAdapter
+        // Inside the updateButton click listener in MyAdapter
+        updateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Retrieve new data from the EditText fields and Spinner
+                String newItemName = itemNameEditText.getText().toString();
+                String newItemPrice = itemPriceEditText.getText().toString();
+                String newItemCategory = spinnerCategory.getSelectedItem().toString();
+                String newItemQuantity = itemQuantityEditText.getText().toString();
+                String newItemDescription = itemDescriptionEditText.getText().toString();
 
+                // Update the item's data
+                item.setItemName(newItemName);
+                item.setItemPrice(newItemPrice);
+                item.setItemCategory(newItemCategory);
+                item.setItemQuantity(newItemQuantity);
+                item.setItemDescription(newItemDescription);
 
-//        Button updateButton = rootView.findViewById(R.id.btnupdate);
-//
-//        updateButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                // Retrieve new data from the EditText fields and Spinner
-//                String newItemId = itemIdEditText.getText().toString();
-//                String newItemName = itemNameEditText.getText().toString();
-//                String newItemPrice = itemPriceEditText.getText().toString(); // Changed to String
-//                String newItemCategory = spinnerCategory.getSelectedItem().toString();
-//                String newItemQuantity = itemQuantityEditText.getText().toString();
-//                String newItemDescription = itemDescriptionEditText.getText().toString();
-//
-//                // Create a new manageitems object with the updated data
-//                manageitems updatedItem = new manageitems(newItemId, newItemName, newItemPrice, newItemCategory, newItemQuantity, newItemDescription);
-//
-//                // Update the Firestore document with the new data
-//                FirebaseFirestore db = FirebaseFirestore.getInstance();
-//                db.collection("items")
-//                        .document(item.getItemId()) // Use the original document ID
-//                        .set(updatedItem) // Use .set() or .update() to update the document
-//                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                            @Override
-//                            public void onSuccess(Void aVoid) {
-//                                showToast("Item updated successfully!");
-//                                dialog.dismiss(); // Close the dialog after the update
-//                            }
-//                        });
-//
-//            }
-//        });
-
-
-
-
+                // Now, you can use this updated 'item' to update the Firestore document
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                db.collection("items")
+                        .document(item.getItemId()) // Use the item's ID
+                        .set(item) // Update the Firestore document with the new data
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                showToast("Item updated successfully!");
+                                dialog.dismiss(); // Close the dialog after the update
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                showToast("Failed to update item. Error: " + e.getMessage());
+                            }
+                        });
+            }
+        });
 
 
     }
-    private void retrieveCategoriesForSpinner(Spinner spinnerCategory, manageitems item) {
+        private void retrieveCategoriesForSpinner(Spinner spinnerCategory, manageitems item) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         db.collection("items")
