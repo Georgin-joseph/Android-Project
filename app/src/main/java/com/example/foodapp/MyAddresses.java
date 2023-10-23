@@ -4,7 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -26,10 +28,12 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
 
 public class MyAddresses extends AppCompatActivity {
     private LinearLayout linearLayout2;
@@ -38,6 +42,8 @@ public class MyAddresses extends AppCompatActivity {
     private RecyclerView Recycle;
     private TextView  userName, userflat, usermobile,userlocation,userlandmark;
 
+    MyAdapterAddresses Adapter;
+    ArrayList<MyAddress> list;
     private boolean isFormVisible = false;
     private Button Saveaddress;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
@@ -47,6 +53,7 @@ public class MyAddresses extends AppCompatActivity {
         setContentView(R.layout.activity_my_addresses);
         linearLayout2=findViewById(R.id.linearLayout2);
         formLayout = findViewById(R.id.formLayout);
+
         Recycle=findViewById(R.id.Recycle);
         userName=findViewById(R.id.userName);
         userflat=findViewById(R.id.userflat);
@@ -54,6 +61,13 @@ public class MyAddresses extends AppCompatActivity {
         userlocation=findViewById(R.id.userlocation);
         userlandmark=findViewById(R.id.userlandmark);
         Saveaddress=findViewById(R.id.Saveaddress);
+
+        Recycle.setHasFixedSize(true);
+        Recycle.setLayoutManager(new LinearLayoutManager(this));
+
+        list=new ArrayList<>();
+        Adapter=new MyAdapterAddresses(this,list);
+        Recycle.setAdapter(Adapter);
 
         formLayout.setVisibility(View.INVISIBLE);
         Recycle.setVisibility(View.VISIBLE);
@@ -114,6 +128,7 @@ public class MyAddresses extends AppCompatActivity {
             }
         });
         retrieveAndDisplayUserData();
+        retrieveAndDisplayUserData2();
 
     }
     private void storeUserDetails() {
@@ -177,6 +192,42 @@ public class MyAddresses extends AppCompatActivity {
                             // Handle the case where the document doesn't exist
                             Toast.makeText(MyAddresses.this, "User document not found.", Toast.LENGTH_SHORT).show();
                         }
+                    } else {
+                        // Handle the error if the query is not successful
+                        Toast.makeText(MyAddresses.this, "Error retrieving user data.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+    private void retrieveAndDisplayUserData2() {
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        String currentUserId = auth.getCurrentUser().getUid();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // Reference to the user's document in Firestore
+        DocumentReference userDocRef = db.collection("users").document(currentUserId);
+
+        // Reference to the "Address" sub-collection inside the user's document
+        CollectionReference addressCollectionRef = userDocRef.collection("Address");
+
+        addressCollectionRef.get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        list.clear(); // Clear the previous data
+                        for (DocumentSnapshot document : task.getResult()) {
+                            // Retrieve data from each document in the "Address" sub-collection
+                            String building = document.getString("Building");
+                            String location = document.getString("Location");
+                            String landmark = document.getString("Landmark");
+                            String mobile = document.getString("Receiver mobile");
+
+                            // Create a MyAddress object with the retrieved data
+                            MyAddress myAddress = new MyAddress(building, location, landmark, mobile);
+
+                            // Add the MyAddress object to the list for displaying in the RecyclerView
+                            list.add(myAddress);
+                        }
+                        // Notify the Adapter of the data change
+                        Adapter.notifyDataSetChanged();
                     } else {
                         // Handle the error if the query is not successful
                         Toast.makeText(MyAddresses.this, "Error retrieving user data.", Toast.LENGTH_SHORT).show();
