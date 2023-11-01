@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.example.foodapp.Adapter.CategoryAdapter;
 import com.example.foodapp.Adapter.FastDeliveryAdapter;
+import com.example.foodapp.Cart;
 import com.example.foodapp.Domain.CategoryDomain;
 import com.example.foodapp.MyAdapter;
 import com.example.foodapp.R;
@@ -142,6 +143,11 @@ public class Admin2 extends AppCompatActivity {
 
     public void userprofile(View view) {
         Intent i = new Intent(getApplicationContext(), User_profile.class);
+        startActivity(i);
+    }
+
+    public void cart(View view) {
+        Intent i = new Intent(getApplicationContext(), Cart.class);
         startActivity(i);
     }
 }

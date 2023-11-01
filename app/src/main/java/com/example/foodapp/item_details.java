@@ -38,6 +38,7 @@ public class item_details extends AppCompatActivity {
 
         TextView itemNameTextView = findViewById(R.id.texttitle);
         TextView itemPriceTextView = findViewById(R.id.price);
+        TextView Description=findViewById(R.id.textView22);
         Button addToCartButton = findViewById(R.id.addToCartButton);
 
         String itemId = getIntent().getStringExtra("item_id");
@@ -62,6 +63,7 @@ public class item_details extends AppCompatActivity {
                         // Set the item details in TextViews and ImageView
                         itemNameTextView.setText(itemName);
                         itemPriceTextView.setText(itemPrice);
+                        Description.setText(itemDescription);
 
                         ImageView image = findViewById(R.id.foodPic);
                         Picasso.get().load(imageUrl).into(image);
@@ -70,7 +72,7 @@ public class item_details extends AppCompatActivity {
                             @Override
                             public void onClick(View v) {
                                 // Handle the "Add to Cart" button click event here
-                                addToCart(itemId, itemName, itemPrice);
+                                addToCart(itemId, itemName, itemPrice,imageUrl);
                             }
                         });
 
@@ -88,7 +90,7 @@ public class item_details extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
     }
 
-    private void addToCart(String itemId, String itemName, String itemPrice) {
+    private void addToCart(String itemId, String itemName, String itemPrice,String imageUrl) {
         // Check if the user is authenticated
         if (mAuth.getCurrentUser() != null) {
             String userId = mAuth.getCurrentUser().getUid();
@@ -113,6 +115,7 @@ public class item_details extends AppCompatActivity {
                             cartItem.put("itemId", itemId);
                             cartItem.put("itemName", itemName);
                             cartItem.put("itemPrice", itemPrice);
+                            cartItem.put("imageUrl", imageUrl);
                             cartItem.put("userId", userId); // Include the user's ID
 
                             // Set the data to the Firestore document

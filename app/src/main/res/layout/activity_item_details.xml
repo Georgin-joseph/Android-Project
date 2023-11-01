@@ -23,7 +23,7 @@
 
                 <ImageView
                     android:id="@+id/foodPic"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="365dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/fast_1"
