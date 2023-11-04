@@ -113,6 +113,7 @@
                         android:src="@drawable/share1" />
 
                     <ImageView
+                        android:id="@+id/address_delete"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_marginLeft="40dp"

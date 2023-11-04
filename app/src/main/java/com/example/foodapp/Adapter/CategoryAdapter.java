@@ -1,10 +1,13 @@
 package com.example.foodapp.Adapter;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -13,12 +16,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.foodapp.Domain.CategoryDomain;
 import com.example.foodapp.R;
+import com.example.foodapp.VegActivity;
+import com.example.foodapp.item_details;
+import com.example.foodapp.manageitems;
 
 import java.util.ArrayList;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> {
+
+    Context context;
     public CategoryAdapter(ArrayList<CategoryDomain> categoryDomains) {
         this.categoryDomains = categoryDomains;
+
     }
 
     ArrayList<CategoryDomain> categoryDomains;
@@ -55,6 +64,28 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
         }
         int drawableResouceId=holder.itemView.getContext().getResources().getIdentifier(picUrl,"drawable",holder.itemView.getContext().getPackageName());
         Glide.with((holder.itemView.getContext())).load(drawableResouceId).into(holder.categorypic);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int clickedPosition = holder.getAdapterPosition();
+
+                if (clickedPosition == 0) {
+                    // Clicked on the first item, start Activity1
+                    Intent intent = new Intent(view.getContext(), item_details.class);
+                    view.getContext().startActivity(intent);
+                } else if (clickedPosition == 1) {
+                    // Clicked on the second item, start Activity2
+                    Intent intent = new Intent(view.getContext(), VegActivity.class);
+                    view.getContext().startActivity(intent);
+                } else if (clickedPosition == 2){
+                    Intent intent = new Intent(view.getContext(), item_details.class);
+                    view.getContext().startActivity(intent);
+                    // Handle other items or show a message if needed
+                    Toast.makeText(view.getContext(), "Clicked on item " + clickedPosition, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     @Override
