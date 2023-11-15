@@ -104,13 +104,13 @@
                         android:layout_marginTop="10dp"
                         android:src="@drawable/threedots" />
 
-                    <ImageView
-                        android:id="@+id/imageView18"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:layout_marginLeft="40dp"
-                        android:layout_marginTop="13dp"
-                        android:src="@drawable/share1" />
+<!--                    <ImageView-->
+<!--                        android:id="@+id/imageView18"-->
+<!--                        android:layout_width="25dp"-->
+<!--                        android:layout_height="25dp"-->
+<!--                        android:layout_marginLeft="40dp"-->
+<!--                        android:layout_marginTop="13dp"-->
+<!--                        android:src="@drawable/share1" />-->
 
                     <ImageView
                         android:id="@+id/address_delete"

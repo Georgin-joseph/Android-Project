@@ -5,6 +5,7 @@ public class MyAddress {
     private String Location;
     private String Landmark;
     private String Receiver_mobile;
+    private String  currentUid;
 
     public MyAddress(String building, String location, String landmark, String receiver_mobile) {
         Building = building;
@@ -27,6 +28,9 @@ public class MyAddress {
     public String getReceiver_mobile() {
         return Receiver_mobile;
     }
+//    public void setItemId(String itemId) {
+//        this. currentUid =  currentUid;
+//    }
 
 
 

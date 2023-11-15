@@ -13,6 +13,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.content.Intent;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -121,6 +122,7 @@ public class MyAddresses extends AppCompatActivity {
             public void onClick(View v) {
                 // Call the function to store user details when the saveButton is clicked
                 storeUserDetails();
+                retrieveAndDisplayUserData2();
 
                 formLayout.setVisibility(View.INVISIBLE);
                 isFormVisible = false;
@@ -139,13 +141,28 @@ public class MyAddresses extends AppCompatActivity {
         // Reference to the user's document in Firestore
         DocumentReference userDocRef = db.collection("users").document(uid);
 
+        // Get user input from EditText fields
+        String receiverName = userName.getText().toString().trim();
+        String receiverMobile = usermobile.getText().toString().trim();
+        String building = userflat.getText().toString().trim();
+        String location = userlocation.getText().toString().trim();
+        String landmark = userlandmark.getText().toString().trim();
+
+        // Check if any of the required fields is empty
+        if (TextUtils.isEmpty(receiverName) || TextUtils.isEmpty(receiverMobile) ||
+                TextUtils.isEmpty(building) || TextUtils.isEmpty(location)) {
+            // Show a message to the user that they need to enter all required data
+            Toast.makeText(getApplicationContext(), "Please enter all required data", Toast.LENGTH_SHORT).show();
+            return; // Exit the method without proceeding to Firestore write
+        }
+
         // Create a new address object with the details you want to store
         Map<String, Object> addressData = new HashMap<>();
-        addressData.put("Receiver name", userName.getText().toString());
-        addressData.put("Receiver mobile", usermobile.getText().toString());
-        addressData.put("Building", userflat.getText().toString());
-        addressData.put("Location", userlocation.getText().toString());
-        addressData.put("Landmark", userlandmark.getText().toString());
+        addressData.put("Receiver name", receiverName);
+        addressData.put("Receiver mobile", receiverMobile);
+        addressData.put("Building", building);
+        addressData.put("Location", location);
+        addressData.put("Landmark", landmark);
 
         // Reference to the "Address" sub-collection inside the user's document
         CollectionReference addressCollectionRef = userDocRef.collection("Address");
@@ -169,6 +186,7 @@ public class MyAddresses extends AppCompatActivity {
                     }
                 });
     }
+
 
     private void retrieveAndDisplayUserData() {
         FirebaseAuth auth = FirebaseAuth.getInstance();

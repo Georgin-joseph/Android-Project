@@ -44,6 +44,8 @@ dependencies {
     implementation ("com.squareup.picasso:picasso:2.71828")
     implementation ("com.orhanobut:dialogplus:1.11@aar")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
+    implementation ("com.google.firebase:firebase-firestore:23.0.3")
+
 
 
 

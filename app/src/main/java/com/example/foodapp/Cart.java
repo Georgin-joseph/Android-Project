@@ -81,6 +81,8 @@ package com.example.foodapp;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.Context;
 import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -96,7 +98,9 @@ public class Cart extends AppCompatActivity {
     private RecyclerView recyclerViewList;
     private TextView totalFeeTxt, taxTxt, deliveryTxt, totalTxt;
     mycartAdapter myAdapter;
+    private RecyclerView recyclerView;
     ArrayList<mycartdomain> list;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,25 +110,26 @@ public class Cart extends AppCompatActivity {
         recyclerViewList = findViewById(R.id.view);
         recyclerViewList.setHasFixedSize(true);
         recyclerViewList.setLayoutManager(new LinearLayoutManager(this));
-
         list = new ArrayList<>();
         myAdapter = new mycartAdapter(this, list);
         recyclerViewList.setAdapter(myAdapter);
 
-        // Set a click listener for the plusCardBtn in the adapter
-        myAdapter.setPlusCardBtnClickListener(new mycartAdapter.PlusCardBtnClickListener() {
+
+        mycartAdapter adapter = new mycartAdapter(this, list);
+        adapter.setPlusCardBtnClickListener(new mycartAdapter.PlusCardBtnClickListener() {
             @Override
             public void onPlusCardBtnClick(int position) {
-                // Display a toast message when plusCardBtn is clicked
-                Toast.makeText(Cart.this, "Plus is clicked for item at position " + position, Toast.LENGTH_SHORT).show();
-
-                // Here, you can also update the item count in the Cart collection
-                // based on the position of the clicked item
+                // Your implementation when the button is clicked
+                // For example, show a toast message
+                Toast.makeText(Cart.this, "Button clicked at position: " + position, Toast.LENGTH_SHORT).show();
             }
         });
+//        recyclerViewList.setAdapter(myAdapter);
+
 
         retrieveCartData();
     }
+
 
     private void retrieveCartData() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -145,12 +150,13 @@ public class Cart extends AppCompatActivity {
                         String itemPrice = document.getString("itemPrice");
                         String imageUrl = document.getString("imageUrl");
                         String userId = document.getString("userId");
+                        String itemId=document.getString("itemId");
 
                         if (itemName != null && itemPrice != null && userId != null) {
                             // Check if the userId matches the current user's UID
                             if (userId.equals(currentUserId)) {
                                 // Create a mycartdomain object and add it to the list
-                                mycartdomain cartItem = new mycartdomain(itemName, itemPrice, imageUrl);
+                                mycartdomain cartItem = new mycartdomain(itemName, itemPrice, imageUrl,itemId,userId);
                                 list.add(cartItem);
                             }
                         }
@@ -170,4 +176,7 @@ public class Cart extends AppCompatActivity {
             }
         });
     }
+
+
+    
 }

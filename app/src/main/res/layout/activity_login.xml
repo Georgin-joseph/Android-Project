@@ -84,14 +84,14 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="232dp"
         android:layout_marginTop="28dp"
-        android:onClick="forgotpassword"
         android:text="@string/forgot_password"
         android:textColor="@color/white"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/password"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/password" />
+        app:layout_constraintTop_toBottomOf="@+id/password"
+        android:onClick="forgotpassword" />
+
 
     <Button
         android:id="@+id/Btn1"

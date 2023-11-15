@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -62,6 +63,14 @@ public class Login extends AppCompatActivity {
 //                goToRegister();
 //            }
 //        });
+
+        forgotpassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Call your forgotpassword method here or include the logic directly
+                forgotpassword();
+            }
+        });
     }
 
 
@@ -105,78 +114,89 @@ public class Login extends AppCompatActivity {
     private void retrieveUserRole(String email) {
         // Reference to the "users" collection in Firestore
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("users").whereEqualTo("email",email)
+        db.collection("users").whereEqualTo("email", email)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                           for( QueryDocumentSnapshot document : task.getResult()) {
-                               if (document.exists()) {
-                                   // Get the "role" field from the document
-                                   String role = document.getString("role");
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                if (document.exists()) {
+                                    // Get the "role" field from the document
+                                    String role = document.getString("role");
 
-                                   // Check the role and start the appropriate activity
-                                   if ("admin".equals(role)) {
-                                       Intent intent = new Intent(Login.this, Admin.class);
-                                       startActivity(intent);
-                                   } else if ("user".equals(role)) {
-                                       Intent intent = new Intent(Login.this, Admin2.class);
-                                       startActivity(intent);
-                                   } else {
-                                       Toast.makeText(getApplicationContext(), "Unknown role: " + role, Toast.LENGTH_LONG).show();
-                                   }
+                                    // Check the role and start the appropriate activity
+                                    if ("admin".equals(role)) {
+                                        Intent intent = new Intent(Login.this, Admin.class);
+                                        startActivity(intent);
+                                    } else if ("user".equals(role)) {
+                                        Intent intent = new Intent(Login.this, Admin2.class);
+                                        startActivity(intent);
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), "Unknown role: " + role, Toast.LENGTH_LONG).show();
+                                    }
 
-                               } else {
-                                   Toast.makeText(getApplicationContext(), "Error retrieving user data", Toast.LENGTH_LONG).show();
-                               }
-                           } } }
-                });
-        forgotpassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog.Builder builder=new AlertDialog.Builder(Login.this);
-                View dialogview=getLayoutInflater().inflate(R.layout.dialog_forgot,null);
-                EditText emailBox=dialogview.findViewById(R.id.emailBox);
-
-
-                builder.setView(dialogview);
-                AlertDialog dialog=builder.create();
-
-                dialogview.findViewById(R.id.btnReset).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        String useremail=emailBox.getText().toString();
-                        if(TextUtils.isEmpty(useremail) && !Patterns.EMAIL_ADDRESS.matcher(useremail).matches()){
-                            Toast.makeText(Login.this,"Enter your registered email id",Toast.LENGTH_LONG).show();
-                            return;
-                        }
-                        mAuth.sendPasswordResetEmail(useremail).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if(task.isSuccessful()){
-                                    Toast.makeText(Login.this,"Check Your email",Toast.LENGTH_LONG).show();
-                                }
-                                else {
-                                    Toast.makeText(Login.this,"Unable to send,  failed",Toast.LENGTH_LONG).show();
+                                } else {
+                                    Toast.makeText(getApplicationContext(), "Error retrieving user data", Toast.LENGTH_LONG).show();
                                 }
                             }
-                        });
+                        }
                     }
                 });
-                dialogview.findViewById(R.id.btncancel).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        dialog.dismiss();
-                    }
-                });
-                if(dialog.getWindow() !=null){
-                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-                }
-                dialog.show();
-            }
-        });
     }
+        public void forgotpassword() {
+            Log.d("ForgotPassword", "onClick: Forgot Password button clicked");
+            Toast.makeText(getApplicationContext(), "Forgot password is clicked", Toast.LENGTH_LONG).show();
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(Login.this);
+            View dialogview = getLayoutInflater().inflate(R.layout.dialog_forgot, null);
+            EditText emailBox = dialogview.findViewById(R.id.emailBox);
+
+            builder.setView(dialogview);
+            AlertDialog dialog = builder.create();
+
+            dialogview.findViewById(R.id.btnReset).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.d("ForgotPassword", "onClick: Reset button clicked");
+
+                    String useremail = emailBox.getText().toString();
+                    if (TextUtils.isEmpty(useremail) && !Patterns.EMAIL_ADDRESS.matcher(useremail).matches()) {
+                        Log.d("ForgotPassword", "onClick: Invalid email");
+                        Toast.makeText(Login.this, "Enter your registered email id", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+
+                    mAuth.sendPasswordResetEmail(useremail).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Log.d("ForgotPassword", "onClick: Password reset email sent successfully");
+                                Toast.makeText(Login.this, "Check Your email", Toast.LENGTH_LONG).show();
+                            } else {
+                                Log.d("ForgotPassword", "onClick: Password reset email sending failed");
+                                Toast.makeText(Login.this, "Unable to send,  failed", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+                }
+            });
+
+            dialogview.findViewById(R.id.btncancel).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.d("ForgotPassword", "onClick: Cancel button clicked");
+                    dialog.dismiss();
+                }
+            });
+
+            if (dialog.getWindow() != null) {
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+            }
+
+            dialog.show();
+        }
+
 
 //    public void forgotpassword(View view) {
 //        Intent i=new Intent(Login.this,Forgotpassword.class);
