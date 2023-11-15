@@ -59,6 +59,14 @@
         app:layout_constraintTop_toTopOf="@+id/imageView19"
         tools:layout_marginStart="8dp" />
 
+    <ImageView
+        android:id="@+id/cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/baseline_cancel_24"
+        app:layout_constraintBottom_toTopOf="@+id/feeEachItem"
+        app:layout_constraintEnd_toEndOf="@+id/feeEachItem" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout3"
         android:layout_width="wrap_content"
@@ -119,7 +127,7 @@
                 android:id="@+id/numberitemtxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="1"
+                android:text="0"
                 android:textColor="#373b54"
                 android:textSize="18sp"
                 android:textStyle="bold"
