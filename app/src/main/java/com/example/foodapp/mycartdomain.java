@@ -3,13 +3,13 @@ package com.example.foodapp;
 public class mycartdomain {
 
 
-    public mycartdomain(String itemName, String itemPrice,String imageUrl,String itemId,String userId,int newPrice) {
+    public mycartdomain(String itemName, String itemPrice,String imageUrl,String itemId,String userId,int newPrice,int count) {
         this.itemName = itemName;
         this.itemPrice = itemPrice;
         this.imageUrl = imageUrl;
         this.itemId = itemId;
         this.userId=userId;
-        this.count=0;
+        this.count=count;
         this.newPrice=0;
         this.totalNewPrice=0;
 

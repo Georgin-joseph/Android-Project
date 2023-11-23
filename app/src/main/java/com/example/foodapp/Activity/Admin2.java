@@ -22,6 +22,7 @@ import com.example.foodapp.R;
 import com.example.foodapp.User;
 import com.example.foodapp.User_profile;
 import com.example.foodapp.fastDeliveryDomain;
+import com.example.foodapp.order;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
@@ -148,6 +149,11 @@ public class Admin2 extends AppCompatActivity {
 
     public void cart(View view) {
         Intent i = new Intent(getApplicationContext(), Cart.class);
+        startActivity(i);
+    }
+
+    public void Orders(View view) {
+        Intent i = new Intent(getApplicationContext(), order.class);
         startActivity(i);
     }
 }

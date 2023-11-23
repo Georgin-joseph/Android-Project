@@ -19,6 +19,7 @@ import com.example.foodapp.R;
 import com.example.foodapp.VegActivity;
 import com.example.foodapp.item_details;
 import com.example.foodapp.manageitems;
+import com.example.foodapp.nonVeg;
 
 import java.util.ArrayList;
 
@@ -72,7 +73,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
 
                 if (clickedPosition == 0) {
                     // Clicked on the first item, start Activity1
-                    Intent intent = new Intent(view.getContext(), item_details.class);
+                    Intent intent = new Intent(view.getContext(), nonVeg.class);
                     view.getContext().startActivity(intent);
                 } else if (clickedPosition == 1) {
                     // Clicked on the second item, start Activity2

@@ -42,7 +42,7 @@ public class User_profile extends AppCompatActivity {
     private boolean isFormVisible = false;
     private Spinner spinnerGender;
     private Button Addmoney,saveButton;
-    private TextView nameTextView, userName, userEmail, usermobile,Balance;
+    private TextView nameTextView, userName, userEmail, usermobile,Balance,textView17;
     private TextView emailTextView;
 
     @Override
@@ -67,6 +67,7 @@ public class User_profile extends AppCompatActivity {
         usermobile = findViewById(R.id.usermobile);
         saveButton=findViewById(R.id.buttonSave);
         Balance=findViewById(R.id.balance);
+        textView17=findViewById(R.id.textView17);
 
         // Initialize the Spinner with gender options
         String[] genderOptions = {"Male", "Female", "Other"};
@@ -331,6 +332,11 @@ public class User_profile extends AppCompatActivity {
         Intent intent = new Intent(User_profile.this, MyAddresses.class);
         startActivity(intent);
 
+    }
+
+    public void order(View view) {
+        Intent intent = new Intent(User_profile.this, order.class);
+        startActivity(intent);
     }
 
     // Define and initialize the saveButton

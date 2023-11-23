@@ -102,6 +102,7 @@ package com.example.foodapp;//package com.example.foodapp;
 //    }
 //}
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
@@ -115,6 +116,7 @@ import android.widget.Toast;
 
 import com.example.foodapp.R;
 import com.example.foodapp.mycartdomain;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -236,7 +238,7 @@ public class mycartAdapter extends RecyclerView.Adapter<mycartAdapter.MyViewHold
 
         TextView itemName, itemPrice, totalEachItem, numberitemtxt;
         ImageView imageUrl;
-        ImageView plusCardBtn,cancel,minusCardBtn;
+        ImageView plusCardBtn, cancel, minusCardBtn;
         Button textView25;
 
         public MyViewHolder(@NonNull View itemView) {
@@ -247,14 +249,15 @@ public class mycartAdapter extends RecyclerView.Adapter<mycartAdapter.MyViewHold
             imageUrl = itemView.findViewById(R.id.imageView19);
             plusCardBtn = itemView.findViewById(R.id.plusCardBtn);
             textView25 = itemView.findViewById(R.id.textView25);
-            totalEachItem=itemView.findViewById(R.id.totalEachItem);
+            totalEachItem = itemView.findViewById(R.id.totalEachItem);
             plusCardBtn.setOnClickListener(this);
             numberitemtxt = itemView.findViewById(R.id.numberitemtxt);
-            cancel=itemView.findViewById(R.id.cancel);
+            cancel = itemView.findViewById(R.id.cancel);
             cancel.setOnClickListener(view -> handleCancelImageClick());
             minusCardBtn = itemView.findViewById(R.id.minusCardBtn);
             minusCardBtn.setOnClickListener(view -> handleMinusImageClick());
         }
+
         private void handleMinusImageClick() {
             // Logic for minusCardBtn click
 
@@ -265,6 +268,7 @@ public class mycartAdapter extends RecyclerView.Adapter<mycartAdapter.MyViewHold
             // Call a method to decrement the count in Firestore
             decrementCountInFirestore(itemId, userId);
         }
+
         private void handleCancelImageClick() {
             // Logic for cancelImage click
 
@@ -275,6 +279,7 @@ public class mycartAdapter extends RecyclerView.Adapter<mycartAdapter.MyViewHold
             // Call a method to delete the item from Firestore
             deleteItemFromFirestore(itemId, userId);
         }
+
         public int clickCount = 0;
 
         @Override
@@ -309,6 +314,15 @@ public class mycartAdapter extends RecyclerView.Adapter<mycartAdapter.MyViewHold
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         // Found the document, update the count
                         int currentCount = document.contains("count") ? document.getLong("count").intValue() : 0;
+//                        int itemQuantity = document.contains("itemQuantity") ? document.getLong("itemQuantity").intValue() : 0;
+//                        int itemQuantity = getItemQuantityFromItemsCollection(itemId);
+//                        Toast.makeText(context, "Item Quantity: " + itemQuantity, Toast.LENGTH_SHORT).show();
+                        // Check if the new count exceeds itemQuantity
+//                        if (currentCount + newCount > itemQuantity) {
+//                            // Show an alert message that the item is not available
+//                            showItemNotAvailableAlert();
+//                            return; // Stop further processing
+//                        }
 
                         // Calculate the new count and price
                         int newCountValue = currentCount + newCount;
@@ -331,6 +345,40 @@ public class mycartAdapter extends RecyclerView.Adapter<mycartAdapter.MyViewHold
                 }
             });
         }
+
+//        private int getItemQuantityFromItemsCollection(String itemId) {
+//            // Assuming your items collection has a field named "itemQuantity"
+//            // Replace "items" with your actual collection name
+//            DocumentReference itemRef = firestore.collection("items").document(itemId);
+//
+//            itemRef.get().addOnSuccessListener(documentSnapshot -> {
+//                if (documentSnapshot.exists()) {
+//                    // Retrieve the itemQuantity field as an integer
+//                    String itemQuantity = documentSnapshot.getString("itemQuantity");
+//
+//                    Log.v("Tag", "Item Quantity: " + itemQuantity);
+//
+//                } else {
+//                    Log.e("Firestore", "Item document does not exist");
+//
+//                }
+//            }).addOnFailureListener(e -> Log.e("Firestore", "Error getting item document", e));
+//
+//            return (0);
+//        }
+
+//        private void showItemNotAvailableAlert() {
+//            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+//            builder.setTitle("Item Not Available")
+//                    .setMessage("Sorry, the item is not available in the selected quantity.")
+//                    .setPositiveButton("OK", (dialog, which) -> {
+//                        // You can add any additional action upon clicking OK, or leave it empty
+//                        dialog.dismiss();
+//                    })
+//                    .show();
+////            Toast.makeText(context, "Item Quantity: " + itemQuantity, Toast.LENGTH_SHORT).show();
+//
+//        }
 
 
         private void retrieveCountFromFirestore(String itemId, String userId) {
@@ -464,5 +512,7 @@ public class mycartAdapter extends RecyclerView.Adapter<mycartAdapter.MyViewHold
 
 
     }
-    }
+
+
+}
 

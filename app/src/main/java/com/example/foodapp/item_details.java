@@ -73,6 +73,8 @@ public class item_details extends AppCompatActivity {
                             public void onClick(View v) {
                                 // Handle the "Add to Cart" button click event here
                                 addToCart(itemId, itemName, itemPrice,imageUrl);
+                                Intent i = new Intent(getApplicationContext(), Admin2.class);
+                                startActivity(i);
                             }
                         });
 
