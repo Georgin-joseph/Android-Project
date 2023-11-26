@@ -27,6 +27,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -34,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class Admin extends AppCompatActivity implements adminOrderAdapter.OnItemLongClickListener{
 
@@ -43,13 +45,16 @@ ArrayList<adminOrderDomain> list;
 
     RecyclerView recyclerView;
     private TextView shortageItemCountTextView;
-
+    TextView textView1,textView6;
+    FirebaseFirestore firestore = FirebaseFirestore.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin);
         userCountTextView = findViewById(R.id.textview8);
         shortageItemCountTextView = findViewById(R.id.textview);
+        textView1=findViewById(R.id.textview1);
+        textView6=findViewById(R.id.textView6);
 //        textView11=findViewById(R.id.textView11);
         recyclerView=findViewById(R.id.view);
         recyclerView.setHasFixedSize(true);
@@ -68,6 +73,8 @@ ArrayList<adminOrderDomain> list;
         retrieveShortageItemCount();
 //        setContentView(R.layout.feedback_form);
         retrieveOrderDetails();
+        displayPendingItemsCount();
+        displayDeliveredItemsCount();
 
     }
 
@@ -103,7 +110,7 @@ ArrayList<adminOrderDomain> list;
     private void retrieveShortageItemCount() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("items")
-                .whereLessThan("itemQuantity", "5") // Adjust the value as per your definition of shortage
+                .whereLessThan("itemQuantity", "200") // Adjust the value as per your definition of shortage
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -272,6 +279,50 @@ ArrayList<adminOrderDomain> list;
                         Log.e(TAG, "Error updating order status", e);
                     }
                 });
+    }
+
+    private void displayPendingItemsCount() {
+        // Replace "items" with your actual collection name
+        CollectionReference itemsCollection = firestore.collection("Order");
+
+        // Replace "pending" with the status you want to query for
+        Query query = itemsCollection.whereEqualTo("status", "Pending");
+
+        query.get().addOnSuccessListener(queryDocumentSnapshots -> {
+            int totalCount = queryDocumentSnapshots.size();
+
+            Log.v("Tag", "Total Count of Pending Items: " + totalCount);
+
+            // Display the total count in the TextView
+            textView1.setText(String.valueOf(totalCount));
+
+        }).addOnFailureListener(e -> {
+            Log.e("Firestore", "Error querying items with pending status", e);
+            // Handle failure, e.g., display an error message in textView1
+            textView1.setText("Error retrieving count");
+        });
+    }
+
+    private void displayDeliveredItemsCount() {
+        // Replace "items" with your actual collection name
+        CollectionReference itemsCollection = firestore.collection("Order");
+
+        // Replace "pending" with the status you want to query for
+        Query query = itemsCollection.whereEqualTo("status", "Delivered");
+
+        query.get().addOnSuccessListener(queryDocumentSnapshots -> {
+            int totalCount = queryDocumentSnapshots.size();
+
+            Log.v("Tag", "Total Count of delivered Items: " + totalCount);
+
+            // Display the total count in the TextView
+            textView6.setText(String.valueOf(totalCount));
+
+        }).addOnFailureListener(e -> {
+            Log.e("Firestore", "Error querying items with delivered status", e);
+            // Handle failure, e.g., display an error message in textView1
+            textView1.setText("Error retrieving count");
+        });
     }
 }
 

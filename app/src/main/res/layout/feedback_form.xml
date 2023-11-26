@@ -23,7 +23,7 @@
         android:layout_marginTop="16dp"
         android:inputType="textMultiLine"
         android:gravity="start|top"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:minLines="3"
         android:maxLines="5"
         android:backgroundTint="@color/coloraaccent"/>

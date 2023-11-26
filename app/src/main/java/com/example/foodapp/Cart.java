@@ -122,7 +122,7 @@ public class Cart extends AppCompatActivity {
     ArrayList<mycartdomain> list;
     ArrayList<addressDomin> list1;
     TextView textView28;
-
+    private boolean orderPlaced = false;
     private int totalPrice;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -189,7 +189,7 @@ public class Cart extends AppCompatActivity {
                             String Location = document.getString("Location");
                             String Landmark = document.getString("Landmark");
                             String Receiver_mobile = document.getString("Receiver mobile");
-                            String Receiver_name=document.getString(" Receiver_name");
+                            String Receiver_name=document.getString(" Receiver name");
                             Boolean isChecked= Boolean.valueOf(document.getString("isChecked"));
 
                             // Create a MyAddress object with the retrieved data
@@ -366,22 +366,21 @@ private void sumNewPriceValues() {
 
                 TextView placeOrderTextView = findViewById(R.id.Placeorder);
                 placeOrderTextView.setOnClickListener(v -> {
-                    retrieveCartItemDetails();
-                    retrieveCartItemDetails1();
-                    removeAllItemsFromCart(currentUserId);
-                    list.clear();
-                    if (currentUser != null) {
-                        String currentUserIdPlaceOrder = currentUser.getUid();
 
-                        // Call the method to retrieve user balance
-                        retrieveUserBalance(currentUserIdPlaceOrder, totalPrice);
-                    } else {
-                        // Handle the case where the current user is null
-                        Toast.makeText(Cart.this, "Current user not found", Toast.LENGTH_SHORT).show();
-                    }
+//                    if (!orderPlaced) {
+                        if (currentUser != null) {
+                            String currentUserIdPlaceOrder = currentUser.getUid();
+
+                            // Call the method to retrieve user balance
+                            retrieveUserBalance(currentUserIdPlaceOrder, totalPrice);
+//                            orderPlaced = true;
+                        } else {
+                            // Handle the case where the current user is null
+                            Toast.makeText(Cart.this, "Current user not found", Toast.LENGTH_SHORT).show();
+                        }
 
 //                    mycartAdapter.notifyDataSetChanged();
-
+//                    }
                 });
 
 //                retrieveUserItemTotalPrice(currentUserId);
@@ -398,45 +397,98 @@ private void sumNewPriceValues() {
         }
     });
 }
+//    private void retrieveUserBalance(String userId, int totalPrice) {
+//        FirebaseFirestore db = FirebaseFirestore.getInstance();
+//
+//        db.collection("users")
+//                .document(userId)
+//                .get()
+//                .addOnSuccessListener(documentSnapshot -> {
+//                    if (documentSnapshot.exists()) {
+//                        // Retrieve the balance from the document
+//                        int balance = documentSnapshot.getLong("balance").intValue();
+//
+//                        // Check if totalPrice is less than or equal to balance
+//                        if (totalPrice <= balance) {
+//                            // Sufficient balance, proceed with placing the order
+//                            // Retrieve and remove items from the cart
+//                            retrieveCartItemDetails();
+//                            retrieveCartItemDetails1();
+//                            if (isPlaceOrderButtonEnabled()) {
+//                                removeAllItemsFromCart(userId);
+//                                list.clear();
+//
+//                            // Update UI or perform other actions
+//                                int newBalance = balance - totalPrice;
+//                                updateBalanceInUserDocument(userId, newBalance);
+//                            // TODO: Optionally update the user's balance in the Users collection
+//                            // updateBalanceInUserDocument(userId, balance - totalPrice);
+//
+//                            // Notify the user that the order has been placed
+//                            Toast.makeText(Cart.this, "Order placed successfully!", Toast.LENGTH_SHORT).show();
+//                            Intent intent=new Intent(getApplicationContext(),order.class);
+//                            startActivity(intent);
+//                            }
+//                        } else {
+//                            // Insufficient balance, show an alert message
+//                            showLowBalanceAlert();
+//                            disablePlaceOrderButton();
+//                            if (isPlaceOrderButtonEnabled()) {
+//                                removeAllItemsFromCart(userId);
+//                            }
+//                        }
+//                    } else {
+//                        // Handle the case where the user document does not exist
+//                        Toast.makeText(Cart.this, "User document not found", Toast.LENGTH_SHORT).show();
+//                    }
+//                })
+//                .addOnFailureListener(e -> {
+//                    // Handle failures
+//                    Toast.makeText(Cart.this, "Error retrieving user balance", Toast.LENGTH_SHORT).show();
+//                });
+//    }
+
     private void retrieveUserBalance(String userId, int totalPrice) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        String currentUserId = currentUser.getUid();
         db.collection("users")
                 .document(userId)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        // Retrieve the balance from the document
+                    if (documentSnapshot != null && documentSnapshot.exists()) {
                         int balance = documentSnapshot.getLong("balance").intValue();
 
-                        // Check if totalPrice is less than or equal to balance
                         if (totalPrice <= balance) {
                             // Sufficient balance, proceed with placing the order
-                            // Retrieve and remove items from the cart
                             retrieveCartItemDetails();
                             retrieveCartItemDetails1();
-                            if (isPlaceOrderButtonEnabled()) {
-                                removeAllItemsFromCart(userId);
-                                list.clear();
+                            removeAllItemsFromCart(currentUserId);
+                            list.clear();
+                            // Disable the place order button if needed
+                            disablePlaceOrderButton();
 
-                            // Update UI or perform other actions
-                                int newBalance = balance - totalPrice;
-                                updateBalanceInUserDocument(userId, newBalance);
-                            // TODO: Optionally update the user's balance in the Users collection
-                            // updateBalanceInUserDocument(userId, balance - totalPrice);
+                            // Remove items from the cart
+                            removeAllItemsFromCart(userId);
+                            list.clear();
+
+                            // Update the user's balance
+                            int newBalance = balance - totalPrice;
+                            updateBalanceInUserDocument(userId, newBalance);
 
                             // Notify the user that the order has been placed
                             Toast.makeText(Cart.this, "Order placed successfully!", Toast.LENGTH_SHORT).show();
-                            Intent intent=new Intent(getApplicationContext(),order.class);
+
+                            // Navigate to the order page or perform other actions
+                            Intent intent = new Intent(getApplicationContext(), order.class);
                             startActivity(intent);
-                            }
                         } else {
                             // Insufficient balance, show an alert message
                             showLowBalanceAlert();
+
+                            // Disable the place order button if needed
                             disablePlaceOrderButton();
-                            if (isPlaceOrderButtonEnabled()) {
-                                removeAllItemsFromCart(userId);
-                            }
                         }
                     } else {
                         // Handle the case where the user document does not exist
@@ -448,6 +500,8 @@ private void sumNewPriceValues() {
                     Toast.makeText(Cart.this, "Error retrieving user balance", Toast.LENGTH_SHORT).show();
                 });
     }
+
+
     private void updateBalanceInUserDocument(String userId, int newBalance) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -665,7 +719,7 @@ private void sumNewPriceValues() {
                                         "\nNew Price: " + newPrice +
                                         "\nCount: " + count +
                                         "\nisChecked: " + isChecked);
-                                Toast.makeText(Cart.this, "Order placed", Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(Cart.this, "Order placed", Toast.LENGTH_SHORT).show();
                             }
 
                             // Process the cart item details as needed (e.g., log or use the data)
@@ -688,6 +742,59 @@ private void sumNewPriceValues() {
         // You can also use the cartItemDetailsList for further processing as needed
     }
 
+//    private void retrieveCartItemDetails1() {
+//        sumNewPriceValues();
+//        FirebaseFirestore db = FirebaseFirestore.getInstance();
+//        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+//        FirebaseUser currentUser = mAuth.getCurrentUser();
+//
+//        if (currentUser != null) {
+//            String currentUserId = currentUser.getUid();
+//            CollectionReference cartCollection = db.collection("Cart");
+//            CollectionReference orderCollection = db.collection("Order");
+//
+//            String orderId = orderCollection.document().getId();
+//            cartCollection.whereEqualTo("userId", currentUserId)
+//                    .get()
+//                    .addOnCompleteListener(task -> {
+//                        if (task.isSuccessful()) {
+//                            List<OrderItem> orderItems = new ArrayList<>();
+//
+//                            for (QueryDocumentSnapshot document : task.getResult()) {
+//                                String itemName = document.getString("itemName");
+//                                String itemPrice = document.getString("itemPrice");
+////                                int newPrice = document.getLong("newPrice").intValue();
+//                                Long newPriceLong = document.getLong("newPrice");
+//                                int newPrice = (newPriceLong != null) ? newPriceLong.intValue() : 0;
+//                                int count = document.getLong("count").intValue();
+//                                boolean isChecked = document.getBoolean("isChecked");
+//
+//                                OrderItem orderItem = new OrderItem(itemName, itemPrice, newPrice, count, isChecked);
+//                                orderItems.add(orderItem);
+//                            }
+//
+//                            // Create an OrderModel with the list of order items
+//                            OrderModel orderModel = new OrderModel(orderItems, currentUserId, "Pending", this.totalPrice); // Set default status as "Pending"
+//
+//                            Date currentDate = Calendar.getInstance().getTime();
+//                            Timestamp timestamp = new Timestamp(currentDate);
+//                            orderModel.setOrderTimestamp(timestamp);
+//                            // Add the OrderModel to the "Order" collection
+//                            orderCollection.document(orderId)
+//                                    .set(orderModel)
+//                                    .addOnSuccessListener(aVoid -> {
+//                                        // Order data successfully stored
+//                                    })
+//                                    .addOnFailureListener(e -> {
+//                                        // Handle the error
+//                                    });
+//                        } else {
+//                            // Handle the error
+//                        }
+//                    });
+//        }
+//    }
+
     private void retrieveCartItemDetails1() {
         sumNewPriceValues();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -698,6 +805,7 @@ private void sumNewPriceValues() {
             String currentUserId = currentUser.getUid();
             CollectionReference cartCollection = db.collection("Cart");
             CollectionReference orderCollection = db.collection("Order");
+            CollectionReference itemsCollection = db.collection("items");
 
             String orderId = orderCollection.document().getId();
             cartCollection.whereEqualTo("userId", currentUserId)
@@ -709,7 +817,6 @@ private void sumNewPriceValues() {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 String itemName = document.getString("itemName");
                                 String itemPrice = document.getString("itemPrice");
-//                                int newPrice = document.getLong("newPrice").intValue();
                                 Long newPriceLong = document.getLong("newPrice");
                                 int newPrice = (newPriceLong != null) ? newPriceLong.intValue() : 0;
                                 int count = document.getLong("count").intValue();
@@ -717,14 +824,17 @@ private void sumNewPriceValues() {
 
                                 OrderItem orderItem = new OrderItem(itemName, itemPrice, newPrice, count, isChecked);
                                 orderItems.add(orderItem);
+
+                                // Reduce itemQuantity in the items collection
+                                reduceItemQuantity(itemsCollection, itemName, count);
                             }
 
                             // Create an OrderModel with the list of order items
-                            OrderModel orderModel = new OrderModel(orderItems, currentUserId, "Pending", this.totalPrice); // Set default status as "Pending"
-
+                            OrderModel orderModel = new OrderModel(orderItems, currentUserId, "Pending", this.totalPrice);
                             Date currentDate = Calendar.getInstance().getTime();
                             Timestamp timestamp = new Timestamp(currentDate);
                             orderModel.setOrderTimestamp(timestamp);
+
                             // Add the OrderModel to the "Order" collection
                             orderCollection.document(orderId)
                                     .set(orderModel)
@@ -740,6 +850,42 @@ private void sumNewPriceValues() {
                     });
         }
     }
+
+    private void reduceItemQuantity(CollectionReference itemsCollection, String itemName, int count) {
+        itemsCollection.whereEqualTo("itemName", itemName)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            // Get the current itemQuantity as a string
+                            String currentQuantityStr = document.getString("itemQuantity");
+
+                            // Convert the string to an integer
+                            int currentQuantity = 0;
+                            if (currentQuantityStr != null && !currentQuantityStr.isEmpty()) {
+                                currentQuantity = Integer.parseInt(currentQuantityStr);
+                            }
+
+                            // Calculate the new itemQuantity after reducing count
+                            int newItemQuantity = currentQuantity - count;
+
+                            // Update the itemQuantity in the items collection
+                            itemsCollection.document(document.getId())
+                                    .update("itemQuantity", String.valueOf(newItemQuantity))
+                                    .addOnSuccessListener(aVoid -> {
+                                        // ItemQuantity updated successfully
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        // Handle the error
+                                    });
+                        }
+                    } else {
+                        // Handle the error
+                    }
+                });
+    }
+
+
 
     public void refresh(View view) {
         reloadYourActivity();

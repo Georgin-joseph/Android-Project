@@ -21,6 +21,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class addressAdapter extends RecyclerView.Adapter<addressAdapter.MyViewHolder> {
@@ -29,6 +30,7 @@ public class addressAdapter extends RecyclerView.Adapter<addressAdapter.MyViewHo
     ArrayList<addressDomin> list;
     private Map<String, Boolean> checkboxStates;
     private boolean isAnyCheckboxChecked;
+
 
     public addressAdapter(Context context, ArrayList<addressDomin> list) {
         this.context = context;
@@ -60,24 +62,30 @@ public class addressAdapter extends RecyclerView.Adapter<addressAdapter.MyViewHo
 
         CheckBox checkBox = holder.itemView.findViewById(R.id.checkBox);
         checkBox.setChecked(addressDomin.isChecked());
+
         checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             // Update the mycartdomain object with the new checkbox state
             addressDomin.setChecked(isChecked);
 
             // Update the checkbox state in Firestore
-            updateCheckboxStatusInFirestore( isChecked);
+            updateCheckboxStatusInFirestore(isChecked);
 
             // Show a toast message when the checkbox is checked
             if (isChecked) {
                 Toast.makeText(context, "Address is Selected", Toast.LENGTH_SHORT).show();
-            }
-            else {
+            } else {
                 Toast.makeText(context, "Please select Address", Toast.LENGTH_SHORT).show();
             }
 
             isAnyCheckboxChecked = isChecked;
         });
+
+        // Show a message if the checkbox is not checked
+        if (!checkBox.isChecked()) {
+            Toast.makeText(context, "Please select Address", Toast.LENGTH_SHORT).show();
+        }
     }
+
     private void updateCheckboxStatusInFirestore(boolean isChecked) {
         // Update the 'isChecked' field in the Firestore document
         FirebaseFirestore db = FirebaseFirestore.getInstance();

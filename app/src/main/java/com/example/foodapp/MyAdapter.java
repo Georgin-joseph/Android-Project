@@ -47,6 +47,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         manageitems item = list.get(position);
         holder.ItemName.setText(item.getItemName());
         holder.ItemId.setText(item.getItemId());
+        holder.ItemQty.setText(item.getItemQuantity());
 
         // Set a click listener for the "Edit" button
         holder.editButton.setOnClickListener(new View.OnClickListener() {
@@ -75,13 +76,14 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView ItemName, ItemId;
+        TextView ItemName, ItemId,ItemQty;
         Button editButton, deleteButton;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             ItemName = itemView.findViewById(R.id.ItemName);
             ItemId = itemView.findViewById(R.id.ItemId);
+            ItemQty=itemView.findViewById(R.id.ItemQuantity);
             editButton = itemView.findViewById(R.id.edit);
             deleteButton = itemView.findViewById(R.id.delete);
         }
@@ -181,7 +183,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     ArrayList<String> categories = new ArrayList<>();
                     for (int i = 0; i < queryDocumentSnapshots.size(); i++) {
-                        String category = queryDocumentSnapshots.getDocuments().get(i).getString("category"); // Use "category"
+                        String category = queryDocumentSnapshots.getDocuments().get(i).getString("category");
                         if (category != null && !categories.contains(category)) {
                             categories.add(category);
                         }

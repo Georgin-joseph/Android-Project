@@ -163,8 +163,8 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/view2"
-                    android:layout_width="369dp"
-                    android:layout_height="333dp"
+                    android:layout_width="371dp"
+                    android:layout_height="341dp"
                     android:layout_marginTop="24dp"
                     android:clipToPadding="false"
                     android:paddingStart="24dp"
@@ -178,10 +178,11 @@
         </LinearLayout>
 
     </ScrollView>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_width="394dp"
+        android:layout_height="43dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">

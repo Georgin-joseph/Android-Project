@@ -114,25 +114,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.foodapp.R;
-import com.example.foodapp.mycartdomain;
-import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.SetOptions;
-import com.google.firebase.firestore.Transaction;
 import com.squareup.picasso.Picasso;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class mycartAdapter extends RecyclerView.Adapter<mycartAdapter.MyViewHolder> {
 
@@ -146,6 +139,7 @@ public class mycartAdapter extends RecyclerView.Adapter<mycartAdapter.MyViewHold
 
     private FirebaseFirestore firestore;
     private FirebaseAuth auth;
+    String itemQuantity;
 
     public mycartAdapter(Context context, ArrayList<mycartdomain> list) {
         this.context = context;
@@ -190,7 +184,7 @@ public class mycartAdapter extends RecyclerView.Adapter<mycartAdapter.MyViewHold
 // Assuming that you have a setCount method in mycartdomain, update the count in the mycartdomain object
             mycartdomain.setCount(count);
 
-            Toast.makeText(context, "new price" + newPrice, Toast.LENGTH_SHORT).show();
+//            Toast.makeText(context, "new price" + newPrice, Toast.LENGTH_SHORT).show();
             holder.totalEachItem.setText(String.valueOf(newPrice));
 
 
@@ -285,7 +279,7 @@ public class mycartAdapter extends RecyclerView.Adapter<mycartAdapter.MyViewHold
         @Override
         public void onClick(View view) {
 
-            clickCount++;
+            clickCount+=1;
 
             // Get the current user's UID
             String currentUserUid = auth.getCurrentUser().getUid();
@@ -296,7 +290,8 @@ public class mycartAdapter extends RecyclerView.Adapter<mycartAdapter.MyViewHold
 
             // Update the count in Firestore only if the user UID and current UID are the same
             if (currentUserUid.equals(userId)) {
-                updateCountInFirestore(itemId, userId, 1);
+
+                getItemQuantityFromItemsCollection(itemId, userId);
             }
 
             int toastMessage = clickCount;
@@ -304,7 +299,7 @@ public class mycartAdapter extends RecyclerView.Adapter<mycartAdapter.MyViewHold
             retrieveCountFromFirestore(itemId, userId);
         }
 
-        private void updateCountInFirestore(String itemId, String userId, int newCount) {
+        private void updateCountInFirestore(String itemId,String itemQuantity, String userId, int newCount) {
             // Query to find the document based on itemId and userId
             Query query = firestore.collection("Cart").whereEqualTo("itemId", itemId).whereEqualTo("userId", userId);
 
@@ -314,15 +309,14 @@ public class mycartAdapter extends RecyclerView.Adapter<mycartAdapter.MyViewHold
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         // Found the document, update the count
                         int currentCount = document.contains("count") ? document.getLong("count").intValue() : 0;
-//                        int itemQuantity = document.contains("itemQuantity") ? document.getLong("itemQuantity").intValue() : 0;
 //                        int itemQuantity = getItemQuantityFromItemsCollection(itemId);
-//                        Toast.makeText(context, "Item Quantity: " + itemQuantity, Toast.LENGTH_SHORT).show();
-                        // Check if the new count exceeds itemQuantity
-//                        if (currentCount + newCount > itemQuantity) {
-//                            // Show an alert message that the item is not available
-//                            showItemNotAvailableAlert();
-//                            return; // Stop further processing
-//                        }
+                        Toast.makeText(context, "Item Quantity: " + itemQuantity, Toast.LENGTH_SHORT).show();
+                        int qty=Integer.parseInt(itemQuantity);
+                        if (currentCount + newCount > qty) {
+                            // Show an alert message that the item is not available
+                            showItemNotAvailableAlert();
+                            return; // Stop further processing
+                        }
 
                         // Calculate the new count and price
                         int newCountValue = currentCount + newCount;
@@ -346,39 +340,42 @@ public class mycartAdapter extends RecyclerView.Adapter<mycartAdapter.MyViewHold
             });
         }
 
-//        private int getItemQuantityFromItemsCollection(String itemId) {
-//            // Assuming your items collection has a field named "itemQuantity"
-//            // Replace "items" with your actual collection name
-//            DocumentReference itemRef = firestore.collection("items").document(itemId);
-//
-//            itemRef.get().addOnSuccessListener(documentSnapshot -> {
-//                if (documentSnapshot.exists()) {
-//                    // Retrieve the itemQuantity field as an integer
-//                    String itemQuantity = documentSnapshot.getString("itemQuantity");
-//
-//                    Log.v("Tag", "Item Quantity: " + itemQuantity);
-//
-//                } else {
-//                    Log.e("Firestore", "Item document does not exist");
-//
-//                }
-//            }).addOnFailureListener(e -> Log.e("Firestore", "Error getting item document", e));
-//
-//            return (0);
-//        }
+        private int getItemQuantityFromItemsCollection(String itemId, String userId) {
+// Replace "items" with your actual collection name
+            CollectionReference itemsCollection = firestore.collection("items");
 
-//        private void showItemNotAvailableAlert() {
-//            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-//            builder.setTitle("Item Not Available")
-//                    .setMessage("Sorry, the item is not available in the selected quantity.")
-//                    .setPositiveButton("OK", (dialog, which) -> {
-//                        // You can add any additional action upon clicking OK, or leave it empty
-//                        dialog.dismiss();
-//                    })
-//                    .show();
-////            Toast.makeText(context, "Item Quantity: " + itemQuantity, Toast.LENGTH_SHORT).show();
-//
-//        }
+// Replace "itemIdValue" with the specific value you want to query
+            Query query = itemsCollection.whereEqualTo("itemId", itemId);
+
+            query.get().addOnSuccessListener(queryDocumentSnapshots -> {
+                for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                    // Retrieve the itemQuantity field as an integer
+                    itemQuantity = document.getString("itemQuantity");
+
+                    Log.v("Tag", "Item Quantity: " + itemQuantity);
+
+                    updateCountInFirestore(itemId,itemQuantity, userId, 1);
+                }
+
+                // Perform your desired actions here, e.g., updateCountInFirestore(itemId, itemQuantity, userId, 1);
+
+            }).addOnFailureListener(e -> Log.e("Firestore", "Error querying item documents", e));
+
+            return (0);
+        }
+
+        private void showItemNotAvailableAlert() {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle("Item Not Available")
+                    .setMessage("Sorry, the item is not available in the selected quantity.")
+                    .setPositiveButton("OK", (dialog, which) -> {
+                        // You can add any additional action upon clicking OK, or leave it empty
+                        dialog.dismiss();
+                    })
+                    .show();
+//            Toast.makeText(context, "Item Quantity: " + itemQuantity, Toast.LENGTH_SHORT).show();
+
+        }
 
 
         private void retrieveCountFromFirestore(String itemId, String userId) {
